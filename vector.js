@@ -44,7 +44,6 @@ class Vector {
         return new Vector(this.x / val, this.y / val)
     }
     addTo(v) {
-        console.log(v);
         this.x += v.getX();
         this.y += v.getY();
     }
