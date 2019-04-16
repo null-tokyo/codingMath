@@ -2,6 +2,9 @@ class Utils {
     clamp(value, min, max) {
         return Math.min(Math.max(value, Math.min(min, max)), Math.max(min, max));
     }
+    randomRange(min, max) {
+        return min + (max - min) * Math.random()
+    }
     distance(p0, p1) {
         let dx = p1.x - p0.x;
         let dy = p1.y - p0.y;

@@ -11,9 +11,11 @@ class Particle {
         this.mass = 1;
 
         this.radius = 0;
+        this.friction = 1;
     }
     update() {
-        this.velocity.addTo(this.gravity)
+        this.velocity.multiplyBy(this.friction);
+        this.velocity.addTo(this.gravity);
         this.position.addTo(this.velocity);
     }
     accelerate(accel) {
