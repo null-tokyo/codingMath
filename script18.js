@@ -15,14 +15,14 @@ window.onload = function () {
     sun1.mass = 10000;
     sun1.radius = 10;
     sun2.mass = 20000;
-    sun2.radius = 20;
+    sun2.mass = 20;
 
     for (let i = 0; i < numParticles; i++) {
-        let p = new Particle(emitter.x, emitter.y, utils.randomRange(7, 8), Math.PI * 2 * 0.25 + Math.random() * 0.1);
+        let p = new Particle(emitter.x, emitter.y, utils.randomRange(7, 8), Math.PI * 2 * 0.75);
         p.addGravitation(sun1);
         p.addGravitation(sun2);
         p.radius = 3;
-        particles.push(p);
+        p
     }
 
     update();
@@ -33,26 +33,20 @@ window.onload = function () {
         createCircle(sun1, 'yellow');
         createCircle(sun2, 'yellow');
 
-        for (let i = 0; i < numParticles; i++) {
-            let p = particles[i];
-            p.update();
-            createCircle(p, 'black');
-        }
-
         requestAnimationFrame(update);
     }
+}
 
-    function createCircle(p, color) {
-        context.fillStyle = color;
-        context.beginPath();
-        context.arc(
-            p.x,
-            p.y,
-            p.radius,
-            0,
-            Math.PI * 2,
-            false
-        )
-        context.fill();
-    }
+function createCircle(p, color) {
+    context.beginPath();
+    context.arc(
+        p.x,
+        p.y,
+        p.radius,
+        0,
+        Math.PI * 2,
+        false
+    )
+    context.fill(color);
+    context.stroke();
 }

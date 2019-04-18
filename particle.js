@@ -11,8 +11,14 @@ class Particle {
 
         this.radius = 0;
         this.friction = 1;
+
+        this.springs = [];
+        this.gravitations = [];
+
     }
     update() {
+        this.handleSprings();
+        this.handleGravitation();
         //friction
         this.vx *= this.friction;
         this.vy *= this.friction;
@@ -21,6 +27,61 @@ class Particle {
         //velocity
         this.x += this.vx;
         this.y +=  this.vy;
+    }
+    handleSprings() {
+        for (let i = 0; i < this.springs.length; i++) {
+            let spring = this.springs[i];
+            this.springTo(spring.point, spring.k, spring.length);
+        }
+    }
+    addSpring(point, k, length) {
+        this.removeSpring(point);
+        this.springs.push({
+            point: point,
+            k: k,
+            length: length || 0
+        });
+    }
+    removeSpring(point) {
+        for (let i = 0; i < this.springs.length; i++) {
+            if(point === this.springs[i]) {
+                this.springs.splice(i, 1);
+                return;
+            }
+        }
+    }
+    handleGravitation() {
+        for (let i = 0; i < this.gravitations.length; i++) {
+            this.gravitateTo(this.gravitations[i]);
+        }
+    }
+    addGravitation(p) {
+        this.removeGravitation(p);
+        this.gravitations.push(p)
+    }
+    removeGravitation(p) {
+        for (let i = 0; i < this.gravitations.length; i++) {
+            if(p === this.gravitations[i]) {
+                this.gravitation.splice(i, 1);
+                return;
+            }
+        }
+    }
+    getSpeed() {
+        return Math.sqrt(this.vx * this.vx +  this.vy * this.vy);
+    }
+    setSpeed(speed) {
+        let heading = this.getHeading();
+        this.vx = Math.cos(heading) * speed;
+        this.vy = Math.sin(heading) * speed;
+    }
+    getHeading() {
+        return Math.atan2(this.vy, this.vx);
+    }
+    setHeading(heading) {
+        let speed = this.setSpeed();
+        this.vx = Math.cos(heading) * speed;
+        this.vy = Math.sin(heading) * speed;
     }
     accelerate(ax, ay) {
         this.vx += ax;
@@ -40,21 +101,20 @@ class Particle {
         let dy = p2.y - this.y;
         let distSQ = dx * dx + dy * dy;
         let dist = Math.sqrt(distSQ);
-        let force = p.mass / distSQ;
+        let force = p2.mass / distSQ;
 
         let ax = dx / dist * force;
-        let ay = dx / dist * force;
+        let ay = dy / dist * force;
 
         this.vx += ax;
         this.vy += ay;
-
-
-        // var grav = new Vector(0, 0),
-        //     dist = this.distanceTo(p2);
-
-        // grav.setLength(p2.mass / (dist * dist));
-        // grav.setAngle(this.angleTo(p2));
-
-        // this.velocity.addTo(grav);
+    }
+    springTo(point, k, length) {
+        let dx = point.x - this.x;
+        let dy = point.y - this.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        let springForce = (distance - length || 0) * k;
+        this.vx += dx / distance * springForce;
+        this.vy += dy / distance * springForce;
     }
 }
